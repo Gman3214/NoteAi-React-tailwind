@@ -7,7 +7,7 @@ function GetYear(){
 
 function Footer() {
     return(
-        <footer className="h-10 w-screen bg-neutral-800 flex items-center justify-center">
+        <footer className="h-10 w-full bg-neutral-800 flex items-center justify-center">
             <h1 className="p-2 text-white text-xs">Copyright {GetYear()}</h1>
         </footer>
     );
