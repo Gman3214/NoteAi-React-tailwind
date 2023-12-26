@@ -60,6 +60,10 @@
     "yarn add @mui/lab": {
       "name": "yarn add @mui/lab",
       "command": "yarn add @mui/lab"
+    },
+    "npm install @mui/icons-material @mui/material @emotion/styled @emotion/react": {
+      "name": "npm install missing ",
+      "command": "npm install @mui/icons-material @mui/material @emotion/styled @emotion/react"
     }
   }
 }
