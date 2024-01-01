@@ -8,23 +8,26 @@ import OpenAI from "openai";
 
 
 
-async function AskGpt(question , task, setEditorText) {
-    const assistent = new OpenAI({ apiKey: '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', dangerouslyAllowBrowser: true }) 
-    const completion = await assistent.chat.completions.create({
-      messages: [
-        { role: "system", content: task },
-        { role: "user", content: question },
-    ],
-      model: "gpt-3.5-turbo",
-    });
-    console.log(completion.choices[0].message.content);
-    setEditorText(completion.choices[0].message.content)
-    
-}
 
 function NoteAssistent (props){
     const {userData, setUserData} = useContext(AppContext)
     const [anchorEl, setAnchorEl] = useState(null)
+    
+    const AskGpt = async (question , task, setEditorText) => {
+        if (userData.apiKey === undefined) return;
+
+        const assistent = new OpenAI({ apiKey: userData.apiKey, dangerouslyAllowBrowser: true }) 
+        const completion = await assistent.chat.completions.create({
+          messages: [
+            { role: "system", content: task },
+            { role: "user", content: question },
+        ],
+          model: "gpt-3.5-turbo",
+        });
+        console.log(completion.choices[0].message.content);
+        setEditorText(completion.choices[0].message.content)
+        
+    }
 
     const handleClick = (event) =>{
         setAnchorEl(event.currentTarget)
@@ -56,7 +59,7 @@ function NoteAssistent (props){
                 text="Summarize" 
                 onClick={
                     () => {
-                        AskGpt(props.editorText, " You are an assistent that summarizes text, wrap the answer in htmll" , props.setEditorText)
+                        AskGpt(props.editorText, " You are an assistent that summarizes text, wrap the answer in html" , props.setEditorText)
                         }}></Button>
                 <Button extendedClassName="mx-1 my-2" 
                 text="Rewrite" 

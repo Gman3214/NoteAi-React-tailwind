@@ -1,49 +1,63 @@
 import React, { useState }from "react";
 import ProfilePicture from "./ProfilePicture"
 import Popover from '@mui/material/Popover';
-import Button from "./Button";
 import AppContext from "../AppContext";
-import TextInput from "./TextInput";
+import Login from './Login'
+import Register from "./Register";
+import Profile from "./Profile";
 
 function ProfileWidget (){
-    const {userData, setUserData} = React.useContext(AppContext);
-    const [inputText, setInputText] = useState("");
+    const {userData} = React.useContext(AppContext);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [register, setRegister] = useState(false);
 
-    const handleClick = (event) =>{
+    const handlePopoverClick = (event) =>{
         setAnchorEl(event.currentTarget)
     }
 
-    const handleClose = () =>{
+    const handlePopoverClose = () =>{
         setAnchorEl(null)
     }
 
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
+    const handleRegisterToggle = () => {
+        setRegister(!register);
+    }
+
+    const showMenu = () => {
+        if (userData.username !== ""){
+            return (
+                <Profile />
+            );
+        }else{
+            return (
+                <div className="text-center">
+                    {register ? <Register /> : <Login />}
+                    <button className="text-white text-sm mb-2 px-2 py-1 rounded-lg" onClick={handleRegisterToggle}>
+                        {register ? "Go to Login" : "Go to Register"}
+                    </button>
+
+                </div>
+                );
+            
+        }
+    }
+
+    let open = Boolean(anchorEl);
+    let id = open ? 'simple-popover' : undefined;
 
     return(
         <div className="flex justify-end items-start" >
-            <ProfilePicture onClick={handleClick} />
+            <ProfilePicture onClick={handlePopoverClick} />
             <Popover 
-            PaperProps={{
-                sx: {
-                  backgroundColor: '#343434',
-                }
-              }}
+            PaperProps={{sx: { backgroundColor: '#343434'} }}
             id={id} 
             open={open} 
             anchorEl={anchorEl} 
-            onClose={handleClose} 
-            anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'left',
-                        }}>
-                <div className=" flex flex-col justify-center items-center gap-1 p-3">
-                    <ProfilePicture width="w-10" height="w-10" />
-                    <h1 className="text-white text-2xl">{userData.username}</h1>
-                    <TextInput setValue={setInputText} />
-                    <Button text="Save" onClick={ () => {setUserData(prevValue => ({...prevValue, gptApiKey: inputText }))}} />                  
-                </div>
+            onClose={handlePopoverClose} 
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left'}}
+                        >
+                {showMenu()}
+
             </Popover>
         </div>
     );

@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from "react";
 import Note from "./Note";
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
 
 
@@ -9,7 +7,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 function CreateNotes(note){
     return(
         <Grid xs={12} sx={{flexShrink: 1}}>
-            <Note key={note.id} title={note?.title} text={note?.text} color={note?.color} noteId={note?.id} />
+            <Note key={note._id} title={note?.title} text={note?.text} color={note?.color} noteId={note?._id} />
         </Grid>
     )
 }
@@ -23,7 +21,7 @@ function ArrayToGrids(gridAmount, items) {
 
     for (let i = 0; i < items.length; i++){
         grids[counter].push(items[i]) 
-        counter = (counter == gridAmount - 1) ? 0 : counter + 1;
+        counter = (counter === gridAmount - 1) ? 0 : counter + 1;
     }
     return grids;
 }

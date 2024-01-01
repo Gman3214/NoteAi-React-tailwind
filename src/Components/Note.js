@@ -7,14 +7,15 @@ import AppContext from "../AppContext";
 import CloseIcon from '@mui/icons-material/Close';
 import NoteAssistent from "./NoteAssistent";
 import "./../Styles/TextEditor.css";
-
+import { DeleteNote, PatchNote } from '../Util/NoteService'
 
 function Note(props){
+    const {userData, setUserData, setOperations} = React.useContext(AppContext);
+
     const [title, SetTitle] = useState(props.title)
     const [editorText, setEditorText] = useState(props.text);
     const [noteColor, SetColor] = useState(props.color);
 
-    const {userData, setUserData} = React.useContext(AppContext);
     const colorsOptions = ["bg-red-800", "bg-green-800", "bg-blue-800", "bg-orange-800", "bg-neutral-800", "bg-transparent"]
 
 
@@ -23,10 +24,20 @@ function Note(props){
     }
 
     const DestroyNote = () => {
+
+        setOperations((prevValue) => {
+            return [...prevValue,
+                {
+                    name: `Delete Note ${props.noteId}`,
+                    function: () => DeleteNote(userData.token, props.noteId),
+                    async: true
+                }]
+        })
+
         setUserData((prevValue) => {
             const notesCopy = [...prevValue.notes];
             for (let i = 0; i < prevValue.notes.length ; i++){
-                if (prevValue.notes[i].id === props.noteId){
+                if (prevValue.notes[i]._id === props.noteId){
                     notesCopy.splice(i, 1);
                     break;
                 }
@@ -39,16 +50,22 @@ function Note(props){
         setUserData((prevValue) => {
             const notesCopy = [...prevValue.notes];
             for (const note of notesCopy){
-                if (note.id === props.noteId){
+                if (note._id === props.noteId){
                     note.title = title;
                     note.text = editorText;
                     note.color = noteColor;
                     break;
                 }
             }
+            setOperations((prevValue) => {
+                return [...prevValue, {
+                    name: `Update note ${props.noteId}`,
+                    async: true,
+                    function: async () => {await PatchNote(userData.token, props.noteId, {title: title, text: editorText, color: noteColor})}
+                }]
+            })
             return({...prevValue, notes : notesCopy})
         })
-        console.log("updated context")
     }
 
     return (
